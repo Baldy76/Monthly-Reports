@@ -1,4 +1,4 @@
-const CACHE_NAME = 'field-service-v12';
+const CACHE_NAME = 'field-service-v13';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
