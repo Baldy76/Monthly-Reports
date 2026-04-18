@@ -1,34 +1,59 @@
-// Register the Service Worker
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(err => console.error(err));
 }
 
-// Your existing Apps Script API URL
+// YOUR NEW GOOGLE SCRIPT URL
 const API_URL = "https://script.google.com/macros/s/AKfycbwy0zBP1K4AHAwRjjXAckkUpBqFBRzWBSFq4Fq7_05ftRKYBXVw3bhUecelgZEJYMPn/exec";
 
-// Setup for the Progress Tracker
 const TOTAL_PEOPLE = 14;
-// Load saved progress from the phone's internal memory
 let progressData = JSON.parse(localStorage.getItem('monthlyReportsTracker')) || {};
 
-// UI Elements
 const form = document.getElementById('dataForm');
 const monthSelect = document.getElementById('month');
 const nameSelect = document.getElementById('personName');
 const submitBtn = document.getElementById('submitBtn');
 const statusDiv = document.getElementById('status');
-
 const progressContainer = document.getElementById('progressContainer');
 const progressText = document.getElementById('progressText');
 const progressBarFill = document.getElementById('progressBarFill');
 const completedBanner = document.getElementById('completedBanner');
 const monthLockMsg = document.getElementById('monthLockMsg');
 
-// Listen for dropdown changes to update the UI
+// --- PIONEER UI LOGIC ---
+const sharedCheckbox = document.getElementById('shared');
+const auxPioneerCheckbox = document.getElementById('auxPioneer');
+const regPioneerCheckbox = document.getElementById('regPioneer');
+const hoursInput = document.getElementById('hours');
+
+function handlePioneerLogic(clickedType) {
+  // Make them mutually exclusive
+  if (clickedType === 'aux' && auxPioneerCheckbox.checked) {
+    regPioneerCheckbox.checked = false;
+  } else if (clickedType === 'reg' && regPioneerCheckbox.checked) {
+    auxPioneerCheckbox.checked = false;
+  }
+
+  const isPioneering = auxPioneerCheckbox.checked || regPioneerCheckbox.checked;
+
+  if (isPioneering) {
+    sharedCheckbox.checked = true; 
+    sharedCheckbox.disabled = true; 
+    hoursInput.required = true; 
+    hoursInput.placeholder = "Hours are required!";
+  } else {
+    sharedCheckbox.disabled = false; 
+    hoursInput.required = false; 
+    hoursInput.placeholder = "0";
+  }
+}
+
+auxPioneerCheckbox.addEventListener('change', () => handlePioneerLogic('aux'));
+regPioneerCheckbox.addEventListener('change', () => handlePioneerLogic('reg'));
+// ------------------------
+
 monthSelect.addEventListener('change', updateUI);
 nameSelect.addEventListener('change', checkNameStatus);
 
-// Function to update the Progress Bar and lock/unlock the Month
 function updateUI() {
   const month = monthSelect.value;
   if (!month) {
@@ -40,31 +65,27 @@ function updateUI() {
   const completedNames = progressData[month] || [];
   const count = completedNames.length;
   
-  // Update the visual bar and text
   progressText.innerText = `${count}/${TOTAL_PEOPLE} Collected`;
   progressBarFill.style.width = `${(count / TOTAL_PEOPLE) * 100}%`;
   
-  // Determine if we should lock the month
   if (count > 0 && count < TOTAL_PEOPLE) {
     monthSelect.disabled = true;
     monthLockMsg.style.display = 'block';
     monthLockMsg.innerText = "🔒 Month locked until all 14 reports are collected.";
-    monthLockMsg.style.color = "#d9534f"; // Red
+    monthLockMsg.style.color = "#d9534f"; 
   } else if (count === TOTAL_PEOPLE) {
     monthSelect.disabled = false;
     monthLockMsg.style.display = 'block';
     monthLockMsg.innerText = "🎉 All reports collected! You can select a new month.";
-    monthLockMsg.style.color = "#28a745"; // Green
+    monthLockMsg.style.color = "#28a745"; 
   } else {
-    // Zero collected
     monthSelect.disabled = false;
     monthLockMsg.style.display = 'none';
   }
   
-  checkNameStatus(); // See if the currently selected person is already done
+  checkNameStatus(); 
 }
 
-// Function to show/hide the Green Banner if someone is already submitted
 function checkNameStatus() {
   const month = monthSelect.value;
   const name = nameSelect.value;
@@ -83,7 +104,6 @@ function checkNameStatus() {
   }
 }
 
-// Form Submission
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   
@@ -91,17 +111,26 @@ form.addEventListener('submit', async (e) => {
   submitBtn.innerText = "Sending to Sheets...";
   statusDiv.style.display = 'none';
 
-  // Grab the selected month (even if the dropdown is currently locked/disabled)
   const selectedMonth = monthSelect.value;
   const selectedName = nameSelect.value;
+
+  // Determine standard outputs
+  let finalShared = sharedCheckbox.checked ? "Y" : "N";
+  let finalAuxPioneer = auxPioneerCheckbox.checked ? "Y" : "N";
+
+  // OVERRIDE: If Regular Pioneer is checked, wipe the Shared and Aux fields blank
+  if (regPioneerCheckbox.checked) {
+    finalShared = "";
+    finalAuxPioneer = "";
+  }
 
   const payload = {
     personName: selectedName,
     month: selectedMonth,
-    shared: document.getElementById('shared').checked ? "Y" : "N",
+    shared: finalShared, 
     studies: document.getElementById('studies').value || "",
-    auxPioneer: document.getElementById('auxPioneer').checked ? "Y" : "",
-    hours: document.getElementById('hours').value || "",
+    auxPioneer: finalAuxPioneer, 
+    hours: hoursInput.value || "",
     remarks: document.getElementById('remarks').value || ""
   };
 
@@ -119,19 +148,22 @@ form.addEventListener('submit', async (e) => {
       statusDiv.style.display = 'block';
       statusDiv.innerText = "Success! Data saved to Google Sheets.";
       
-      // Save this person to the phone's memory
       if (!progressData[selectedMonth]) progressData[selectedMonth] = [];
       if (!progressData[selectedMonth].includes(selectedName)) {
         progressData[selectedMonth].push(selectedName);
         localStorage.setItem('monthlyReportsTracker', JSON.stringify(progressData));
       }
       
-      // Clear the form to get ready for the next person, but Keep the Month selected!
       form.reset();
+      
+      // Reset UI locks
+      sharedCheckbox.disabled = false;
+      hoursInput.required = false;
+      hoursInput.placeholder = "0";
+
       monthSelect.value = selectedMonth; 
       updateUI();
       
-      // Hide the success message after 3 seconds to keep UI clean
       setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
       
     } else {
