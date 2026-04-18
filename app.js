@@ -37,11 +37,13 @@ function handlePioneerLogic(clickedType) {
 
   if (isPioneering) {
     sharedCheckbox.checked = false; // UNCHECK the Ministry box
-    sharedCheckbox.disabled = true; // Grey it out
+    sharedCheckbox.disabled = true; // Lock it from being clicked
+    sharedCheckbox.parentNode.style.opacity = "0.4"; // VISUALLY grey out the whole line!
     hoursInput.required = true; 
     hoursInput.placeholder = "Hours are required!";
   } else {
-    sharedCheckbox.disabled = false; // Restore the box if pioneer is unticked
+    sharedCheckbox.disabled = false; // Restore the box
+    sharedCheckbox.parentNode.style.opacity = "1"; // Restore the visual colour!
     hoursInput.required = false; 
     hoursInput.placeholder = "0";
   }
@@ -114,18 +116,15 @@ form.addEventListener('submit', async (e) => {
   const selectedMonth = monthSelect.value;
   const selectedName = nameSelect.value;
 
-  // Determine standard outputs
   let finalShared = sharedCheckbox.checked ? "Y" : "N";
   let finalAuxPioneer = auxPioneerCheckbox.checked ? "Y" : "N";
 
-  // NEW LOGIC: If ANY Pioneer box is checked, send NO DATA for "Shared in Ministry"
   if (auxPioneerCheckbox.checked || regPioneerCheckbox.checked) {
-    finalShared = "";
+    finalShared = ""; // Ensures NO data transfers over to Shared
   }
 
-  // OVERRIDE: If Regular Pioneer is checked, ALSO wipe the Aux Pioneer field blank
   if (regPioneerCheckbox.checked) {
-    finalAuxPioneer = "";
+    finalAuxPioneer = ""; // Ensures NO data transfers over to Aux Pioneer
   }
 
   const payload = {
@@ -160,8 +159,9 @@ form.addEventListener('submit', async (e) => {
       
       form.reset();
       
-      // Reset UI locks
+      // Reset UI locks and visual greying for the next person
       sharedCheckbox.disabled = false;
+      sharedCheckbox.parentNode.style.opacity = "1"; 
       hoursInput.required = false;
       hoursInput.placeholder = "0";
 
