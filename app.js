@@ -6,7 +6,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // Your Apps Script URL
-const API_URL = "https://script.google.com/macros/s/AKfycbxPTxO9t8GTkOw6x9lO_q5DNjxBphv8qNkA4dJBiZoHmN06RgJNNTc1-kLS7Wu7pVIO/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyfOhuvz3_YAmGA-0lcIIKnz0pOyFU34ePHaJMphn2SrNUnkN84fwbyh6fefuzapROL/exec";
 
 const form = document.getElementById('dataForm');
 const submitBtn = document.getElementById('submitBtn');
