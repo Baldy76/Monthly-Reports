@@ -4,7 +4,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // Your existing Apps Script API URL
-const API_URL = "https://script.google.com/macros/s/AKfycbxPTxO9t8GTkOw6x9lO_q5DNjxBphv8qNkA4dJBiZoHmN06RgJNNTc1-kLS7Wu7pVIO/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwy0zBP1K4AHAwRjjXAckkUpBqFBRzWBSFq4Fq7_05ftRKYBXVw3bhUecelgZEJYMPn/exec";
 
 // Setup for the Progress Tracker
 const TOTAL_PEOPLE = 14;
