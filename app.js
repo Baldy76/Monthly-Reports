@@ -5,7 +5,6 @@ if ('serviceWorker' in navigator) {
 // YOUR GOOGLE SCRIPT URL
 const API_URL = "https://script.google.com/macros/s/AKfycbwy0zBP1K4AHAwRjjXAckkUpBqFBRzWBSFq4Fq7_05ftRKYBXVw3bhUecelgZEJYMPn/exec";
 
-// NOTE: If you ever remove someone, change this number!
 const TOTAL_PEOPLE = 13; 
 let progressData = JSON.parse(localStorage.getItem('monthlyReportsTracker')) || {};
 
@@ -20,7 +19,6 @@ const progressBarFill = document.getElementById('progressBarFill');
 const completedBanner = document.getElementById('completedBanner');
 const monthLockMsg = document.getElementById('monthLockMsg');
 
-// --- PIONEER UI LOGIC ---
 const sharedCheckbox = document.getElementById('shared');
 const auxPioneerCheckbox = document.getElementById('auxPioneer');
 const regPioneerCheckbox = document.getElementById('regPioneer');
@@ -51,7 +49,6 @@ function handlePioneerLogic(clickedType) {
 
 auxPioneerCheckbox.addEventListener('change', () => handlePioneerLogic('aux'));
 regPioneerCheckbox.addEventListener('change', () => handlePioneerLogic('reg'));
-// ------------------------
 
 monthSelect.addEventListener('change', updateUI);
 nameSelect.addEventListener('change', checkNameStatus);
@@ -67,18 +64,16 @@ function updateUI() {
   const completedNames = progressData[month] || [];
   const count = completedNames.length;
 
-  // --- NEW: DYNAMIC CHECKMARKS IN DROPDOWN ---
   for (let i = 0; i < nameSelect.options.length; i++) {
     let opt = nameSelect.options[i];
-    if (opt.value !== "") { // Skip the default "Select a person..." option
+    if (opt.value !== "") { 
       if (completedNames.includes(opt.value)) {
-        opt.text = opt.value + " ✅"; // Add tick if submitted
+        opt.text = opt.value + " ✅"; 
       } else {
-        opt.text = opt.value; // Keep normal if not submitted
+        opt.text = opt.value; 
       }
     }
   }
-  // -------------------------------------------
   
   progressText.innerText = `${count}/${TOTAL_PEOPLE} Collected`;
   progressBarFill.style.width = `${(count / TOTAL_PEOPLE) * 100}%`;
@@ -130,7 +125,7 @@ form.addEventListener('submit', async (e) => {
   const selectedName = nameSelect.value;
 
   let finalShared = sharedCheckbox.checked ? "Y" : "N";
-  let finalAuxPioneer = auxPioneerCheckbox.checked ? "Y" : "N";
+  let finalAuxPioneer = auxPioneerCheckbox.checked ? "Y" : ""; 
 
   if (auxPioneerCheckbox.checked || regPioneerCheckbox.checked) {
     finalShared = ""; 
@@ -177,7 +172,7 @@ form.addEventListener('submit', async (e) => {
       hoursInput.placeholder = "0";
 
       monthSelect.value = selectedMonth; 
-      updateUI(); // This will instantly add the ✅ to the person you just submitted!
+      updateUI();
       
       setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
       
