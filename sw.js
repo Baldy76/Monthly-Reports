@@ -1,4 +1,4 @@
-const CACHE_NAME = 'field-service-v4';
+const CACHE_NAME = 'field-service-v10';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -15,7 +15,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Only intercept GET requests, let POST requests to Google go through network normally
   if (event.request.method === 'GET') {
     event.respondWith(
       caches.match(event.request).then(response => {
