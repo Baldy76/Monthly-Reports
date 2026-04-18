@@ -2,7 +2,7 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(err => console.error(err));
 }
 
-// YOUR NEW GOOGLE SCRIPT URL
+// YOUR GOOGLE SCRIPT URL
 const API_URL = "https://script.google.com/macros/s/AKfycbwy0zBP1K4AHAwRjjXAckkUpBqFBRzWBSFq4Fq7_05ftRKYBXVw3bhUecelgZEJYMPn/exec";
 
 const TOTAL_PEOPLE = 14;
@@ -36,12 +36,12 @@ function handlePioneerLogic(clickedType) {
   const isPioneering = auxPioneerCheckbox.checked || regPioneerCheckbox.checked;
 
   if (isPioneering) {
-    sharedCheckbox.checked = true; 
-    sharedCheckbox.disabled = true; 
+    sharedCheckbox.checked = false; // UNCHECK the Ministry box
+    sharedCheckbox.disabled = true; // Grey it out
     hoursInput.required = true; 
     hoursInput.placeholder = "Hours are required!";
   } else {
-    sharedCheckbox.disabled = false; 
+    sharedCheckbox.disabled = false; // Restore the box if pioneer is unticked
     hoursInput.required = false; 
     hoursInput.placeholder = "0";
   }
@@ -118,9 +118,13 @@ form.addEventListener('submit', async (e) => {
   let finalShared = sharedCheckbox.checked ? "Y" : "N";
   let finalAuxPioneer = auxPioneerCheckbox.checked ? "Y" : "N";
 
-  // OVERRIDE: If Regular Pioneer is checked, wipe the Shared and Aux fields blank
-  if (regPioneerCheckbox.checked) {
+  // NEW LOGIC: If ANY Pioneer box is checked, send NO DATA for "Shared in Ministry"
+  if (auxPioneerCheckbox.checked || regPioneerCheckbox.checked) {
     finalShared = "";
+  }
+
+  // OVERRIDE: If Regular Pioneer is checked, ALSO wipe the Aux Pioneer field blank
+  if (regPioneerCheckbox.checked) {
     finalAuxPioneer = "";
   }
 
