@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Monthly Field Service</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root { --primary: #0056b3; --bg: #f4f7f6; --box: #ffffff; --text: #333333; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+    .container { max-width: 500px; margin: 0 auto; background: var(--box); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: var(--primary); margin-top: 0; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
+    select, input[type="number"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+    .checkbox-group { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+    .checkbox-group input { width: 24px; height: 24px; }
+    button { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+    button:hover { background-color: #004494; }
+    button:disabled { background-color: #cccccc; cursor: not-allowed; }
+    #status { margin-top: 15px; text-align: center; font-weight: bold; display: none; padding: 10px; border-radius: 8px;}
+    .success { background-color: #d4edda; color: #155724; }
+    .error { background-color: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Monthly Activity</h2>
+  
+  <form id="dataForm">
+    <div class="form-group">
+      <label for="personName">Name</label>
+      <select id="personName" required>
+        <option value="" disabled selected>Select a person...</option>
+        <option value="Cain, Ruth">Cain, Ruth</option>
+        <option value="Davis, Julian">Davis, Julian</option>
+        <option value="Davis, Susan">Davis, Susan</option>
+        <option value="Harrison, Marion">Harrison, Marion</option>
+        <option value="Hogarty, Paul">Hogarty, Paul</option>
+        <option value="Hogarty, Ruth">Hogarty, Ruth</option>
+        <option value="Leech, David">Leech, David</option>
+        <option value="Leech, Dawn">Leech, Dawn</option>
+        <option value="Leech,Eileen">Leech, Eileen</option>
+        <option value="Leech, Grace">Leech, Grace</option>
+        <option value="Leech, Graeme">Leech, Graeme</option>
+        <option value="McRae, Debbie">McRae, Debbie</option>
+        <option value="McRae, Ross">McRae, Ross</option>
+        <option value="Towers, Pat">Towers, Pat</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="month">Reporting Month</label>
+      <select id="month" required>
+        <option value="" disabled selected>Select a month...</option>
+        <option value="2025-09-01">September 2025</option>
+        <option value="2025-10-01">October 2025</option>
+        <option value="2025-11-01">November 2025</option>
+        <option value="2025-12-01">December 2025</option>
+        <option value="2026-01-01">January 2026</option>
+        <option value="2026-02-01">February 2026</option>
+        <option value="2026-03-01">March 2026</option>
+        <option value="2026-04-01">April 2026</option>
+        <option value="2026-05-01">May 2026</option>
+        <option value="2026-06-01">June 2026</option>
+        <option value="2026-07-01">July 2026</option>
+        <option value="2026-08-01">August 2026</option>
+      </select>
+    </div>
+
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="shared">
+      <label for="shared" style="margin-bottom:0;">Shared in The Ministry (Y/N)</label>
+    </div>
+
+    <div class="form-group">
+      <label for="studies">Bible Studies</label>
+      <input type="number" id="studies" min="0" placeholder="0">
+    </div>
+
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="auxPioneer">
+      <label for="auxPioneer" style="margin-bottom:0;">Auxiliary Pioneer (Y/N)</label>
+    </div>
+
+    <div class="form-group">
+      <label for="hours">Hours (If Pioneering)</label>
+      <input type="number" id="hours" min="0" placeholder="0">
+    </div>
+
+    <div class="form-group">
+      <label for="remarks">Remarks</label>
+      <textarea id="remarks" rows="3" placeholder="Any notes..."></textarea>
+    </div>
+
+    <button type="submit" id="submitBtn">Submit Data</button>
+  </form>
+  
+  <div id="status"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
