@@ -6,7 +6,7 @@ if ('serviceWorker' in navigator) {
 const API_URL = "https://script.google.com/macros/s/AKfycbwy0zBP1K4AHAwRjjXAckkUpBqFBRzWBSFq4Fq7_05ftRKYBXVw3bhUecelgZEJYMPn/exec";
 
 // NOTE: If you ever remove someone, change this number!
-const TOTAL_PEOPLE = 14; 
+const TOTAL_PEOPLE = 13; 
 let progressData = JSON.parse(localStorage.getItem('monthlyReportsTracker')) || {};
 
 const form = document.getElementById('dataForm');
