@@ -5,7 +5,8 @@ if ('serviceWorker' in navigator) {
 // YOUR GOOGLE SCRIPT URL
 const API_URL = "https://script.google.com/macros/s/AKfycbwy0zBP1K4AHAwRjjXAckkUpBqFBRzWBSFq4Fq7_05ftRKYBXVw3bhUecelgZEJYMPn/exec";
 
-const TOTAL_PEOPLE = 14;
+// NOTE: If you ever remove someone, change this number!
+const TOTAL_PEOPLE = 14; 
 let progressData = JSON.parse(localStorage.getItem('monthlyReportsTracker')) || {};
 
 const form = document.getElementById('dataForm');
@@ -26,7 +27,6 @@ const regPioneerCheckbox = document.getElementById('regPioneer');
 const hoursInput = document.getElementById('hours');
 
 function handlePioneerLogic(clickedType) {
-  // Make them mutually exclusive
   if (clickedType === 'aux' && auxPioneerCheckbox.checked) {
     regPioneerCheckbox.checked = false;
   } else if (clickedType === 'reg' && regPioneerCheckbox.checked) {
@@ -36,14 +36,14 @@ function handlePioneerLogic(clickedType) {
   const isPioneering = auxPioneerCheckbox.checked || regPioneerCheckbox.checked;
 
   if (isPioneering) {
-    sharedCheckbox.checked = false; // UNCHECK the Ministry box
-    sharedCheckbox.disabled = true; // Lock it from being clicked
-    sharedCheckbox.parentNode.style.opacity = "0.4"; // VISUALLY grey out the whole line!
+    sharedCheckbox.checked = false; 
+    sharedCheckbox.disabled = true; 
+    sharedCheckbox.parentNode.style.opacity = "0.4"; 
     hoursInput.required = true; 
     hoursInput.placeholder = "Hours are required!";
   } else {
-    sharedCheckbox.disabled = false; // Restore the box
-    sharedCheckbox.parentNode.style.opacity = "1"; // Restore the visual colour!
+    sharedCheckbox.disabled = false; 
+    sharedCheckbox.parentNode.style.opacity = "1"; 
     hoursInput.required = false; 
     hoursInput.placeholder = "0";
   }
@@ -66,6 +66,19 @@ function updateUI() {
   progressContainer.style.display = 'block';
   const completedNames = progressData[month] || [];
   const count = completedNames.length;
+
+  // --- NEW: DYNAMIC CHECKMARKS IN DROPDOWN ---
+  for (let i = 0; i < nameSelect.options.length; i++) {
+    let opt = nameSelect.options[i];
+    if (opt.value !== "") { // Skip the default "Select a person..." option
+      if (completedNames.includes(opt.value)) {
+        opt.text = opt.value + " ✅"; // Add tick if submitted
+      } else {
+        opt.text = opt.value; // Keep normal if not submitted
+      }
+    }
+  }
+  // -------------------------------------------
   
   progressText.innerText = `${count}/${TOTAL_PEOPLE} Collected`;
   progressBarFill.style.width = `${(count / TOTAL_PEOPLE) * 100}%`;
@@ -73,7 +86,7 @@ function updateUI() {
   if (count > 0 && count < TOTAL_PEOPLE) {
     monthSelect.disabled = true;
     monthLockMsg.style.display = 'block';
-    monthLockMsg.innerText = "🔒 Month locked until all 14 reports are collected.";
+    monthLockMsg.innerText = "🔒 Month locked until all reports are collected.";
     monthLockMsg.style.color = "#d9534f"; 
   } else if (count === TOTAL_PEOPLE) {
     monthSelect.disabled = false;
@@ -120,11 +133,10 @@ form.addEventListener('submit', async (e) => {
   let finalAuxPioneer = auxPioneerCheckbox.checked ? "Y" : "N";
 
   if (auxPioneerCheckbox.checked || regPioneerCheckbox.checked) {
-    finalShared = ""; // Ensures NO data transfers over to Shared
+    finalShared = ""; 
   }
-
   if (regPioneerCheckbox.checked) {
-    finalAuxPioneer = ""; // Ensures NO data transfers over to Aux Pioneer
+    finalAuxPioneer = ""; 
   }
 
   const payload = {
@@ -159,14 +171,13 @@ form.addEventListener('submit', async (e) => {
       
       form.reset();
       
-      // Reset UI locks and visual greying for the next person
       sharedCheckbox.disabled = false;
       sharedCheckbox.parentNode.style.opacity = "1"; 
       hoursInput.required = false;
       hoursInput.placeholder = "0";
 
       monthSelect.value = selectedMonth; 
-      updateUI();
+      updateUI(); // This will instantly add the ✅ to the person you just submitted!
       
       setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
       
