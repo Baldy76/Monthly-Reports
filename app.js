@@ -98,7 +98,7 @@ form.addEventListener('submit', async (e) => {
   const payload = {
     personName: selectedName,
     month: selectedMonth,
-    shared: document.getElementById('shared').checked ? "Y" : "",
+    shared: document.getElementById('shared').checked ? "Y" : "N",
     studies: document.getElementById('studies').value || "",
     auxPioneer: document.getElementById('auxPioneer').checked ? "Y" : "",
     hours: document.getElementById('hours').value || "",
