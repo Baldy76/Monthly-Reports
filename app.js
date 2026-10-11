@@ -18,6 +18,7 @@ const progressText = document.getElementById('progressText');
 const progressBarFill = document.getElementById('progressBarFill');
 const completedBanner = document.getElementById('completedBanner');
 const monthLockMsg = document.getElementById('monthLockMsg');
+const resetStorageBtn = document.getElementById('resetStorageBtn');
 
 const sharedCheckbox = document.getElementById('shared');
 const auxPioneerCheckbox = document.getElementById('auxPioneer');
@@ -52,6 +53,20 @@ regPioneerCheckbox.addEventListener('change', () => handlePioneerLogic('reg'));
 
 monthSelect.addEventListener('change', updateUI);
 nameSelect.addEventListener('change', checkNameStatus);
+
+if (resetStorageBtn) {
+  resetStorageBtn.addEventListener('click', () => {
+    if (confirm("Clear app progress memory on this device? This will unlock all months.")) {
+      localStorage.removeItem('monthlyReportsTracker');
+      progressData = {};
+      monthSelect.disabled = false;
+      monthSelect.value = "";
+      updateUI();
+      alert("App progress reset successfully!");
+      location.reload();
+    }
+  });
+}
 
 function updateUI() {
   const month = monthSelect.value;
