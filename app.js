@@ -151,7 +151,13 @@ form.addEventListener('submit', async (e) => {
       body: JSON.stringify(payload)
     });
 
-    const result = await response.json();
+    const rawText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(rawText);
+    } catch (err) {
+      throw new Error("Server returned non-JSON response: " + rawText.substring(0, 60));
+    }
 
     if (result.status === "success") {
       statusDiv.className = "success";
